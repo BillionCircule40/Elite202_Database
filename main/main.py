@@ -13,9 +13,10 @@ def main():
           print("welcome to the xxx bank online system\n-please log or create account to continue ")
           x = int(input("0 login, 1 create"))
           if x ==0:
-               print()
+               print('log')
           else:
-               AC()
+               #AC()
+               print(AC.account("ellie","01001"))
 
 
 
