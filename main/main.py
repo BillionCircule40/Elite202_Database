@@ -1,49 +1,35 @@
-class account:
-     
-     def __init__(self,name,pin):
-          account_info = {}
-          self.name= name
-          self.pin= pin
-          self.account_info = account_info
-          self.account_info.update({"name":self.name})
-          self.account_info.update({"pin":self.pin})
-     def __repr__(self):
-          return f'account name:{self.account_info.get("name")}\naccount pin:{self.account_info.get("pin")}' 
-     
-def info():
-     while True:
-          print("\n-------------------------------------")
-          name = input("Please enter name for account\n>>>")
-          if any(char.isdigit() for char in name):
-               print("please no numbers in account name.")
-               continue
-          break
-     while True:
-          pin = input("Please enter pin for account\n>>>")
-          if any(inter.isalpha() for inter in pin):
-               print("please no charecters in account pin.")
-               continue
-          break
+from modules import accounts
+ac = accounts
 
-
-
-
-
-
-
-
-
-
-
+ac_index = []
 
 def main():
      while True:
+          login = False
           print("welcome to the xxx bank online system\n-please log or create account to continue ")
-          x = int(input("0 login, 1 create"))
+          x = int(input("0 login, 1 create "))
           if x ==0:
-               print('log')
+               name = input("please enter account name or email\n>>>")
+               while True:
+                    pin = input("please enter account pin\n>>")
+                    if len(pin )  >=8:
+                         break
+                    print("pin length must be at least 8 digits\n")
+               for x in ac_index:
+                    if (x.account_info.get("name")==name or x.account_info.get("email"))and x.account_info.get("pin") == pin:
+                         login != login
+                         break
+                    else:
+                         print
+               if login == False:
+                    print("Invalid login")
+
           else:
-               print(info.info())
+               ac_index.append(ac.info())
+               print("account created, please log to access your account")
+               continue
+          if login:
+               print()
 
 
 
