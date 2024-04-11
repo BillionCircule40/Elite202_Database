@@ -14,6 +14,13 @@ class account:
           self.account_info.update({"pin":self.pin})
      def __repr__(self):
           return f'\n-account name:{self.account_info.get("name")}\n-account pin:{self.account_info.get("pin")}'
+     def mod_info(self,item,new):
+          if item == "email":
+               self.email = new
+          elif item == "name":
+               self.name = new
+          else:
+               self.pin = new
       
 class balance(account):
      def __init__(self, name, email, pin,funds = 0):
@@ -32,7 +39,7 @@ class balance(account):
 
 # collects and processes data for the system to create base account structure
 def info():
-     ac = account
+     ac = balance
      repeat = True
      while repeat:
           while True:
