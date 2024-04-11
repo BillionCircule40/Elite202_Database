@@ -19,9 +19,9 @@ def main():
                          break
                     print("pin length must be at least 8 digits\n")
                for x in ac_index:
-                    if (x.account_info.get("name")==name or x.account_info.get("email"))and x.account_info.get("pin") == pin:
+                    if (x.account.account_info.get("name")==name or x.account.account_info.get("email"))and x.account.account_info.get("pin") == pin:
                          account_login_info = x
-                         login != login
+                         login == False
                          break
                     else:
                          print
@@ -54,11 +54,11 @@ def main():
                          if confirm.upper() =="Y":
                               ac_index.remove(account_login_info)
                               print("account removed")
-                              login != login
+                              login = False
 
                     elif op == "x":
                          print(f"thank you again {account_login_info} for using our services")
-                         program_state != program_state
+                         program_state = False
                          break
                     else: 
                          print("invaid input")

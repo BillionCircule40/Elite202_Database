@@ -13,7 +13,7 @@ class account:
           self.account_info.update({"email":self.email})
           self.account_info.update({"pin":self.pin})
      def __repr__(self):
-          return f'\n-account name:{self.account_info.get("name")}\n-account pin:{self.account_info.get("pin")}'
+          return f'\n-account name:{self.account_info.get("name")}\n-account email:{self.account_info.get("email")}\n-account pin:{self.account_info.get("pin")}'
      def mod_info(self,item,new):
           if item == "email":
                self.email = new
@@ -26,7 +26,7 @@ class balance(account):
      def __init__(self, name, email, pin,funds = 0):
           super().__init__(name, email, pin)
           self.funds= funds
-     def __repr__(self):
+     def check(self):
           return f'\n-account name:{self.account_info.get("name")}\n-account balance: {self.funds}'
      def deposit(self,ammount):
           self.funds += ammount
@@ -45,11 +45,15 @@ def info():
           while True:
                print("\n-------------------------------------")
                name = input("Please enter name for account\n>>>")
-               if any(char.isdigit() for char in name):
+               if any(char.isdigit() for char in name)or name == "":
                     print("please no numbers in account name.")
                     continue
                break
-          email = input("Please enter email for account\n>>>")
+          while True:
+               email = input("Please enter email for account\n>>>")
+               if email != "":
+                    break
+               print("no blank emails")
           while True:
                pin = input("Please enter pin for account(min 8)\n>>>")
                if any(inter.isalpha() for inter in pin):
@@ -60,11 +64,11 @@ def info():
                     continue
                break
           while True:
-               confirm = input(f'is this correct {ac(name,email,pin)} (y/n)')
+               confirm = input(f'is this correct {ac(name,email,pin)} \n(y/n) ')
                if confirm.upper() == "N":
                     break
                elif confirm.upper() == "Y":
-                    repeat != repeat
+                    repeat = False
                     break
                else:
                     continue
