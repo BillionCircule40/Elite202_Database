@@ -43,7 +43,9 @@ class account:
 
 
 
-
+def click(input,state):
+     input = state
+     return input
 
 # collects and processes data for the system to create base account structure
 def info(testin='',testem='',testpin = ''):
@@ -76,16 +78,19 @@ def info(testin='',testem='',testpin = ''):
                while True:
                     
                     confirm = Label(root,text = f'is this correct {ac(name,email,pin)} \n(y/n) ')
-                    button_yes = Button(root,text= "YES", fg="white",bg="green",command =lambda: confirm_info=True).grid(row=10,column=0)
-                    button_no = Button(root,text= "NO", fg="white",bg="black", command = confirm_info=False).Grid(row= 10,col=1)
+                    button_yes = Button(root,text= "YES", fg="white",bg="green",command =lambda: click(confirm_info,True)).grid(row=10,column=0)
+                    button_no = Button(root,text= "NO", fg="white",bg="black", command =lambda: click(confirm_info,False)).Grid(row= 10,col=1)
                     if confirm_info:
                          repeat = False
                          break
                     elif confirm_info == False:
                          break
+     
+          root.mainloop() 
           return ac(name,email,pin)
      else:
           return ac(testin,testem,testpin)
+     
 
 
 
