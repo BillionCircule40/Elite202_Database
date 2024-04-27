@@ -1,5 +1,5 @@
 from tkinter import *
-
+from tkinter import messagebox
 
 
 class account:
@@ -49,43 +49,63 @@ def info(root,testin='',testem='',testpin = ''):
      name = StringVar()
      email =StringVar()
      pin = StringVar()
-     confirm_info = BooleanVar()
      repeat = BooleanVar()
      repeat.set(True)
+     confirm = BooleanVar()
+
      if testin =='' and testem == '' and testpin == '':
           while repeat:
+               confirm.set(False)
+               frame = LabelFrame(root,padx=10,pady=10).grid(row=0,column=0)
+               name_text = Label(frame,text="Please enter name for account").grid(row=0,column=0)
+               name = Entry(frame,width=40).grid(row=1,column=0)
+               if any(char.isdigit() for char in name.get()):
+                    name_error= Label(frame,text="please no numbers in account name.").grid(row=2,column=0)
+               else:
+                    name_error.grid_forget()
                
-               print("\n-------------------------------------")
-               acount_name = Label(root,text="Please enter name for account",)
-               if any(char.isdigit() for char in name)or name == "":
-                    print("please no numbers in account name.")
-                    continue
+               email_text = Label(frame,text="Please enter email for account").grid(row=3,column=0)
+               email = Entry(frame,width=40).grid(row=4,column=0)
+               email.insert(0,"ex: ######@gmail.com")
+               if len(email.get())<=0:
+                    email_error =  Label(frame,text="no blank emails").grid(row=5,column=0)
+               else:
+                    email_error.grid_forget()
                
+               pin_text = Label(frame,"Please enter pin for account(min 8)").grid(row=5,column=0)
                
-               email = input("Please enter email for account\n>>>")
-               
-               print("no blank emails")
-               while True:
-                    pin = input("Please enter pin for account(min 8)\n>>>")
-                    if any(inter.isalpha() for inter in pin):
-                         print("Please no charecters in account pin.")
-                         continue
-                    if len(pin)< 8:
-                         print("Pin must be at least then 8 digits long")
-                         continue
-                    break
-               while True:
-                    
-                    confirm = Label(root,text = f'is this correct {ac(name,email,pin)} \n(y/n) ')
-                    button_yes = Button(root,text= "YES", fg="white",bg="green",command =lambda: click(confirm_info,True)).grid(row=10,column=0)
-                    button_no = Button(root,text= "NO", fg="white",bg="black", command =lambda: click(confirm_info,False)).Grid(row= 10,col=1)
-                    if confirm_info:
-                         repeat = False
-                         break
-                    elif confirm_info == False:
-                         break
+               pin = Entry(frame,width=40).grid(row=6,column=0)
+
+               if any(inter.isalpha() for inter in pin.get()):
+                    pin_error = Label(frame,text="Please no charecters in account pin.").grid(row=6,column=0)
+               elif len(pin.get())< 8:
+                    pin_error = Label(frame,text="Pin must be at least then 8 digits long").grid(row=6,column=0)
+               else:
+                    pin_error.grid_forget()
+               if (len(email.get())<=0 or any(char.isdigit() for char in name.get()) or any(inter.isalpha() for inter in pin.get()) or len(pin.get())< 8) == False:
+                    next["state"] = NORMAL
+               next = Button(root,text="next",command=confirm.set(True),state=DISABLED)
+
+
+               if confirm:
+                    while True:
+                         name_text.grid_forget()
+                         name.grid_forget()
+                         email_text.grid_forget()
+                         email.grid_forget()
+                         pin_text.grid_forget()
+                         pin.grid_forget()
+
+                         
+                         confirm_text = Label(root,text = f'is this correct {ac(name.get(),email.get(),pin.get())} ').grid(row=0,column=0)
+                         confirm_info = messagebox.askyesno()
+                         if confirm_info == 1:
+                              repeat.set(False)
+                              break
+                         else:
+                              break
+
      
-          root.mainloop() 
-          return ac(name,email,pin)
+          return ac(name.get(),email.get(),pin.get()) 
      else:
           return ac(testin,testem,testpin)

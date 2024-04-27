@@ -29,7 +29,7 @@ login_state.set(False)
 nextc = BooleanVar()
 nextc.set(False)
 def main():
-     
+     quit = Button(root,text= "Exit",command=root.destroy()).grid(row=10,column=0)
      if login_state.get()!= True:
           prompt= Label(root, text="welcome to the online bank system\n-please log or create account to continue " ).grid(row=0,column=0,columnspan=3,sticky=W+E)
           login_button = Button(root,text="login",padx=20,command=choice.set(1)).grid(row=1,column=0)
