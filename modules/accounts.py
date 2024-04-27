@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 
-
+wigit_index =[]
 class account:
      
      def __init__(self,name,email,pin,funds = 0):
@@ -39,16 +39,78 @@ class account:
                return f'sorry your can out withdraw ${ammount} from your account'
           else:
                self.funds-=ammount
+ac = account
+
+def forget_wigit():
+     while True:
+          for wigit in wigit_index:
+               wigit.grid_forget()
+               print(wigit)
+               wigit_index.remove(wigit)
+          if len(wigit_index) == 0:
+               break
 
 
+def info_check(frame,n,e,p):
+     while True:
+          if any(char.isdigit() for char in n):
+               name_error= Label(frame,text="please no numbers in account name.")
+               name_error.grid(row=2,column=0)
+               break
 
+          else:
+               try:
+                    name_error.grid_forget()
+               except:
+                    print()
+                    
+          if len(e)<=0:
+               email_error =  Label(frame,text="no blank emails")
+               email_error.grid(row=5,column=0)
+               break
+          else:
+               try:
+                    email_error.grid_forget()
+               except:
+                    print()
+                    
+          if any(inter.isalpha() for inter in p):
+               pin_error = Label(frame,text="Please no charecters in account pin.")
+               pin_error.grid(row=6,column=0)
+               break
+
+          elif len(p)< 8:
+               pin_error = Label(frame,text="Pin must be at least then 8 digits long")
+               pin_error.grid(row=6,column=0)
+               break
+
+          else:
+               try:
+                    pin_error.grid_forget()
+               except:
+                    print()
+          confirm(frame,n,e,p)
+
+def confirm(frame,n,e,p):
+     global repeat 
+     while True:
+          forget_wigit()         
+          confirm_text = Label(frame,text = f'is this correct {ac(n,e,p)} ').grid(row=0,column=0)
+          confirm_info = messagebox.askyesno()
+
+          if confirm_info == 1:
+               repeat.set(False)
+               break
+          else:
+               break
 
 # collects and processes data for the system to create base account structure
 def info(root,testin='',testem='',testpin = ''):
-     ac = account
+     
      name = StringVar()
      email =StringVar()
      pin = StringVar()
+     global repeat 
      repeat = BooleanVar()
      repeat.set(True)
      confirm = BooleanVar()
@@ -58,72 +120,38 @@ def info(root,testin='',testem='',testpin = ''):
                confirm.set(False)
                frame = LabelFrame(root,padx=10,pady=10)
                frame.grid(row=0,column=0)
+               
 
                name_text = Label(frame,text="Please enter name for account")
                name_text.grid(row=0,column=0)
+               wigit_index.append(name_text)
+
                name = Entry(frame,width=40)
                name.grid(row=1,column=0)
+               wigit_index.append(name)
 
-               if any(char.isdigit() for char in name.get()):
-                    name_error= Label(frame,text="please no numbers in account name.")
-                    name_error.grid(row=2,column=0)
-
-               else:
-                    name_error.grid_forget()
-               
                email_text = Label(frame,text="Please enter email for account")
                email_text.grid(row=3,column=0)
+               wigit_index.append(email_text)
 
                email = Entry(frame,width=40)
                email.grid(row=4,column=0)
                email.insert(0,"ex: ######@gmail.com")
+               wigit_index.append(email)
 
-               if len(email.get())<=0:
-                    email_error =  Label(frame,text="no blank emails")
-                    email_error.grid(row=5,column=0)
-               else:
-                    email_error.grid_forget()
-               
-               pin_text = Label(frame,"Please enter pin for account(min 8)")
+               pin_text = Label(frame,text="Please enter pin for account(min 8)")
                pin_text.grid(row=5,column=0)
-               
+               wigit_index.append(pin_text)
+
                pin = Entry(frame,width=40)
                pin.grid(row=6,column=0)
+               wigit_index.append(pin)
 
-               if any(inter.isalpha() for inter in pin.get()):
-                    pin_error = Label(frame,text="Please no charecters in account pin.")
-                    pin_error.grid(row=6,column=0)
-
-               elif len(pin.get())< 8:
-                    pin_error = Label(frame,text="Pin must be at least then 8 digits long")
-                    pin_error.grid(row=6,column=0)
-
-               else:
-                    pin_error.grid_forget()
-
-               if (len(email.get())<=0 or any(char.isdigit() for char in name.get()) or any(inter.isalpha() for inter in pin.get()) or len(pin.get())< 8) == False:
-                    next["state"] = NORMAL
-
-               next = Button(root,text="next",command=confirm.set(True),state=DISABLED).grid(row=7,column=0)
+               next = Button(root,text="next",command=lambda: info_check(frame,name.get(),email.get(),pin.get()))
+               next.grid(row=7,column=0)
 
 
-               if confirm:
-                    while True:
-                         name_text.grid_forget()
-                         name.grid_forget()
-                         email_text.grid_forget()
-                         email.grid_forget()
-                         pin_text.grid_forget()
-                         pin.grid_forget()
-
-                         
-                         confirm_text = Label(root,text = f'is this correct {ac(name.get(),email.get(),pin.get())} ').grid(row=0,column=0)
-                         confirm_info = messagebox.askyesno()
-                         if confirm_info == 1:
-                              repeat.set(False)
-                              break
-                         else:
-                              break
+                    
 
      
           return ac(name.get(),email.get(),pin.get()) 
