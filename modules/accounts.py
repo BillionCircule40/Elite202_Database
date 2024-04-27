@@ -56,35 +56,55 @@ def info(root,testin='',testem='',testpin = ''):
      if testin =='' and testem == '' and testpin == '':
           while repeat:
                confirm.set(False)
-               frame = LabelFrame(root,padx=10,pady=10).grid(row=0,column=0)
-               name_text = Label(frame,text="Please enter name for account").grid(row=0,column=0)
-               name = Entry(frame,width=40).grid(row=1,column=0)
+               frame = LabelFrame(root,padx=10,pady=10)
+               frame.grid(row=0,column=0)
+
+               name_text = Label(frame,text="Please enter name for account")
+               name_text.grid(row=0,column=0)
+               name = Entry(frame,width=40)
+               name.grid(row=1,column=0)
+
                if any(char.isdigit() for char in name.get()):
-                    name_error= Label(frame,text="please no numbers in account name.").grid(row=2,column=0)
+                    name_error= Label(frame,text="please no numbers in account name.")
+                    name_error.grid(row=2,column=0)
+
                else:
                     name_error.grid_forget()
                
-               email_text = Label(frame,text="Please enter email for account").grid(row=3,column=0)
-               email = Entry(frame,width=40).grid(row=4,column=0)
+               email_text = Label(frame,text="Please enter email for account")
+               email_text.grid(row=3,column=0)
+
+               email = Entry(frame,width=40)
+               email.grid(row=4,column=0)
                email.insert(0,"ex: ######@gmail.com")
+
                if len(email.get())<=0:
-                    email_error =  Label(frame,text="no blank emails").grid(row=5,column=0)
+                    email_error =  Label(frame,text="no blank emails")
+                    email_error.grid(row=5,column=0)
                else:
                     email_error.grid_forget()
                
-               pin_text = Label(frame,"Please enter pin for account(min 8)").grid(row=5,column=0)
+               pin_text = Label(frame,"Please enter pin for account(min 8)")
+               pin_text.grid(row=5,column=0)
                
-               pin = Entry(frame,width=40).grid(row=6,column=0)
+               pin = Entry(frame,width=40)
+               pin.grid(row=6,column=0)
 
                if any(inter.isalpha() for inter in pin.get()):
-                    pin_error = Label(frame,text="Please no charecters in account pin.").grid(row=6,column=0)
+                    pin_error = Label(frame,text="Please no charecters in account pin.")
+                    pin_error.grid(row=6,column=0)
+
                elif len(pin.get())< 8:
-                    pin_error = Label(frame,text="Pin must be at least then 8 digits long").grid(row=6,column=0)
+                    pin_error = Label(frame,text="Pin must be at least then 8 digits long")
+                    pin_error.grid(row=6,column=0)
+
                else:
                     pin_error.grid_forget()
+
                if (len(email.get())<=0 or any(char.isdigit() for char in name.get()) or any(inter.isalpha() for inter in pin.get()) or len(pin.get())< 8) == False:
                     next["state"] = NORMAL
-               next = Button(root,text="next",command=confirm.set(True),state=DISABLED)
+
+               next = Button(root,text="next",command=confirm.set(True),state=DISABLED).grid(row=7,column=0)
 
 
                if confirm:
