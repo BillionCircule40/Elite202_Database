@@ -1,6 +1,5 @@
-import unittest
 from tkinter import *
-root = Tk()
+
 
 
 class account:
@@ -43,29 +42,29 @@ class account:
 
 
 
-def click(input,state):
-     input = state
-     return input
 
 # collects and processes data for the system to create base account structure
-def info(testin='',testem='',testpin = ''):
+def info(root,testin='',testem='',testpin = ''):
      ac = account
-     confirm_info = bool
-     repeat = True
+     name = StringVar()
+     email =StringVar()
+     pin = StringVar()
+     confirm_info = BooleanVar()
+     repeat = BooleanVar()
+     repeat.set(True)
      if testin =='' and testem == '' and testpin == '':
           while repeat:
-               while True:
-                    print("\n-------------------------------------")
-                    name = input("Please enter name for account\n>>>")
-                    if any(char.isdigit() for char in name)or name == "":
-                         print("please no numbers in account name.")
-                         continue
-                    break
-               while True:
-                    email = input("Please enter email for account\n>>>")
-                    if email != "":
-                         break
-                    print("no blank emails")
+               
+               print("\n-------------------------------------")
+               acount_name = Label(root,text="Please enter name for account",)
+               if any(char.isdigit() for char in name)or name == "":
+                    print("please no numbers in account name.")
+                    continue
+               
+               
+               email = input("Please enter email for account\n>>>")
+               
+               print("no blank emails")
                while True:
                     pin = input("Please enter pin for account(min 8)\n>>>")
                     if any(inter.isalpha() for inter in pin):
@@ -86,7 +85,7 @@ def info(testin='',testem='',testpin = ''):
                     elif confirm_info == False:
                          break
      
-          
+          root.mainloop() 
           return ac(name,email,pin)
      else:
           return ac(testin,testem,testpin)

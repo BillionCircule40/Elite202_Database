@@ -20,17 +20,18 @@ root.geometry("300x100")
 ac = accounts
 ac_index = []
 program_state = BooleanVar()
-ac_index.append(ac.info("testinfo","ian","12345678"))
+ac_index.append(ac.info(root,"testinfo","ian","12345678"))
 account_login_location= IntVar()
 login_state = BooleanVar()
 choice = IntVar()
 check_login= BooleanVar()
 login_state.set(False)
-
+nextc = BooleanVar()
+nextc.set(False)
 def main():
      
      if login_state.get()!= True:
-          prompt= Label(root, text="welcome to the online bank system\n-please log or create account to continue " ).grid(row=0,column=0,columnspan=2,sticky=W+E)
+          prompt= Label(root, text="welcome to the online bank system\n-please log or create account to continue " ).grid(row=0,column=0,columnspan=3,sticky=W+E)
           login_button = Button(root,text="login",padx=20,command=choice.set(1)).grid(row=1,column=0)
           create_button = Button(root,text="Create account",padx=15,command= choice.set(0)).grid(row=1,column=1)
 
@@ -38,21 +39,18 @@ def main():
                login_button.grid_forget()
                create_button.grid_forget()
                prompt.grid_forget()
-               prompt = Label(root,text ="Please enter account name or email").grid(row=0,column=0)
-               name = Entry(root, width=40).grid(row=1,column=0)
+               frame = LabelFrame(root,padx=10,pady=10).grid(row=0,column=0)
+               prompt = Label(frame,text ="Please enter account name or email").grid(row=0,column=0)
+
+               name = Entry(frame, width=40).grid(row=1,column=0)
                name.insert(0,"ex: ######@gmail.com")
-               next = Button(root,text="next",command=check_login.set(True)).grid(row=2,column=0)
-               if check_login:
-                    prompt.grid_forget()
-                    name.grid_forget()
-
-                    pin = Entry(0,"please enter account pin\n>>")
-                    next = Button(root,text="next",state=DISABLED)
-                    if len(pin.get())  >=8:
-                         next["state"] = NORMAL
-                              
-                         
-
+               blank = Label(frame,text="").grid(row=2,column=0)
+               pin_text = Label(frame,text="please enter account pin").grid(row=3,column=0)
+               pin = Entry(frame,width=40).grid(row=4,column=0)
+               if len(pin.get())  >=8 and len(name.get())>0 :
+                    next["state"] = NORMAL
+               next = Button(root,text="next",state=DISABLED).grid(row=2,column=0)
+               if nextc.get():
                     for x in range(len(ac_index)):
                          if ac_index[x].account_info.get("name") == name or ac_index[x].account_info.get("email")== name:
                               if ac_index[x].account_info.get("pin") == pin:
@@ -60,11 +58,11 @@ def main():
                                    login_state = True
                                    break
 
-                    if login_state.get() == False:
-                         print("Invalid login\n")
+               if login_state.get() == False:
+                    print("Invalid login\n")
           
           else:
-               ac_index.append(ac.info())
+               ac_index.append(ac.info(root))
                print("account created, please log to access your account")
                     
      elif login_state.get():
