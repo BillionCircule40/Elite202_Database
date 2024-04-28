@@ -16,42 +16,64 @@ class account:
           self.account_info.update({"pin":self.pin})
      def name_account(self):
           return f'User: {self.account_info.get("name")}, email: {self.account_info.get("email")}\n'
-     def __repr__(self):
+     def info_account(self,locat):
           return f'\n-account name:{self.account_info.get("name")}\n-account email:{self.account_info.get("email")}\n-account pin:{self.account_info.get("pin")}\n'
      def mod_info(self,item,new):
           if item == "email":
                self.email = new
           elif item == "name":
                self.name = new
-          else:
+          elif item == "pin":
                self.pin = new
+          
           self.account_info.update({"name":self.name})
           self.account_info.update({"email":self.email})
           self.account_info.update({"pin":self.pin})
      
 
-     def check(self):
-          return f'\n-account name:{self.account_info.get("name")}\n-account balance: {self.funds}'
-     def deposit(self,ammount):
-          self.funds += ammount
-     def withdraw(self,ammount):
-          if self.funds < ammount:
-               return f'sorry your can out withdraw ${ammount} from your account'
+     def check(self,locat):
+          check = Label(locat,text=f'-account name:{self.account_info.get("name")}\n-account balance: {self.funds}')
+          check.grid(row=1,column=0,padx=20,pady=20)
+          wigit_index.append(check)
+     
+     def deposit(self,locat,ammount = 0):
+          if not ammount<0:
+               try:
+                    invalid.grid_forget()
+               except:
+                    pass
+               self.funds += ammount
           else:
+               invalid = Label(locat,text=f"you canot deposit ${ammount} to your account",fg="red")
+               invalid.grid(row=1,column=0,pady=5)
+               wigit_index.append(invalid)
+
+     def withdraw(self,locat,ammount):
+          if not self.funds < ammount:
+               try:
+                    invalid.grid_forget()
+               except:
+                    pass
                self.funds-=ammount
+          else:
+               invalid = Label(locat,text=f"invalid balace on withdraw  of${ammount} from your account",fg="red")
+               invalid.grid(row=3,column=0,pady=5)
+               wigit_index.append(invalid)
 ac = account
 
 def forget_wigit():
      while True:
           for wigit in wigit_index:
-               wigit.grid_forget()
-               print(wigit)
-               wigit_index.remove(wigit)
+               try:
+                    wigit.grid_forget()
+                    wigit_index.remove(wigit)
+               except:
+                    pass
           if len(wigit_index) == 0:
                break
 
 
-def info_check(frame,n,e,p):
+def info_check(frame,n,e,p,r):
      while True:
           if any(char.isdigit() for char in n):
                name_error= Label(frame,text="please no numbers in account name.")
@@ -62,7 +84,7 @@ def info_check(frame,n,e,p):
                try:
                     name_error.grid_forget()
                except:
-                    print()
+                    pass
                     
           if len(e)<=0:
                email_error =  Label(frame,text="no blank emails")
@@ -72,7 +94,7 @@ def info_check(frame,n,e,p):
                try:
                     email_error.grid_forget()
                except:
-                    print()
+                    pass
                     
           if any(inter.isalpha() for inter in p):
                pin_error = Label(frame,text="Please no charecters in account pin.")
@@ -88,18 +110,17 @@ def info_check(frame,n,e,p):
                try:
                     pin_error.grid_forget()
                except:
-                    print()
-          confirm(frame,n,e,p)
+                    pass
+          confirm(frame,n,e,p,r)
 
-def confirm(frame,n,e,p):
-     global repeat 
+def confirm(frame,n,e,p,r):
      while True:
           forget_wigit()         
           confirm_text = Label(frame,text = f'is this correct {ac(n,e,p)} ').grid(row=0,column=0)
           confirm_info = messagebox.askyesno()
 
           if confirm_info == 1:
-               repeat.set(False)
+               
                break
           else:
                break
@@ -110,13 +131,13 @@ def info(root,testin='',testem='',testpin = ''):
      name = StringVar()
      email =StringVar()
      pin = StringVar()
-     global repeat 
      repeat = BooleanVar()
      repeat.set(True)
      confirm = BooleanVar()
 
      if testin =='' and testem == '' and testpin == '':
           while repeat:
+               print("t")
                confirm.set(False)
                frame = LabelFrame(root,padx=10,pady=10)
                frame.grid(row=0,column=0)
@@ -147,7 +168,7 @@ def info(root,testin='',testem='',testpin = ''):
                pin.grid(row=6,column=0)
                wigit_index.append(pin)
 
-               next = Button(root,text="next",command=lambda: info_check(frame,name.get(),email.get(),pin.get()))
+               next = Button(root,text="next",command=lambda: info_check(frame,name.get(),email.get(),pin.get(),repeat.get()))
                next.grid(row=7,column=0)
 
 
