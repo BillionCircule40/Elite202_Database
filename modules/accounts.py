@@ -18,12 +18,21 @@ class account:
           return f'User: {self.account_info.get("name")}, email: {self.account_info.get("email")}\n'
      def info_account(self,locat):
           return f'\n-account name:{self.account_info.get("name")}\n-account email:{self.account_info.get("email")}\n-account pin:{self.account_info.get("pin")}\n'
-     def mod_info(self,item,new):
+     def mod_info(self,item,new,locat):
           if item == "email":
+               change = Label(locat,text="change of email successful")
+               change.grid(row=5,column=0)
+               wigit_index.append(change)
                self.email = new
           elif item == "name":
+               change = Label(locat,text="change of name successful")
+               change.grid(row=5,column=0)
+               wigit_index.append(change)
                self.name = new
           elif item == "pin":
+               change = Label(locat,text="change of pin successful")
+               change.grid(row=5,column=0)
+               wigit_index.append(change)
                self.pin = new
           
           self.account_info.update({"name":self.name})
@@ -32,8 +41,8 @@ class account:
      
 
      def check(self,locat):
-          check = Label(locat,text=f'-account name:{self.account_info.get("name")}\n-account balance: {self.funds}')
-          check.grid(row=1,column=0,padx=20,pady=20)
+          check = Label(locat,text=f'-account name: {self.account_info.get("name")}\n-account balance: {self.funds}')
+          check.grid(row=1,column=0,columnspan=5,padx=100)
           wigit_index.append(check)
      
      def deposit(self,locat,ammount = 0):
@@ -42,6 +51,9 @@ class account:
                     invalid.grid_forget()
                except:
                     pass
+               suc = Label(locat,text=f"successful deposit of ${ammount}")
+               suc.grid(row=3,column=0)
+               wigit_index.append(suc)
                self.funds += ammount
           else:
                invalid = Label(locat,text=f"you canot deposit ${ammount} to your account",fg="red")
@@ -54,6 +66,9 @@ class account:
                     invalid.grid_forget()
                except:
                     pass
+               suc = Label(locat,text=f"successful withdraw of ${ammount}")
+               suc.grid(row=3,column=0)
+               wigit_index.append(suc)
                self.funds-=ammount
           else:
                invalid = Label(locat,text=f"invalid balace on withdraw  of${ammount} from your account",fg="red")
@@ -66,6 +81,7 @@ def forget_wigit():
           for wigit in wigit_index:
                try:
                     wigit.grid_forget()
+                    print(wigit)
                     wigit_index.remove(wigit)
                except:
                     pass

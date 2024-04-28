@@ -17,14 +17,13 @@ import tkinter.ttk  as tkk
 
 root = Tk()
 root.title("Online Bank system")
-root.geometry("500x600")
-root.configure(background='#706e6c')
+root.geometry("500x800")
+#root.configure(background='#706e6c')
 ac = accounts
 wigit_index = ac.wigit_index
 ac_index = []
 ac_index.append(ac.info(root,"testinfo","ian","12345678"))
 
-forget_wigit = ac.forget_wigit()
 
 #resets program to base(does not affect local index)
 def log_out():
@@ -42,14 +41,14 @@ def delete(location):
           log_out()
      else:
           ac.messagebox.showinfo
-
+#directs to account modual info function
 def create():
-     forget_wigit()
+     ac.forget_wigit()
      ac_index.append(ac.info(root))
      account_create_text = Label(root,text="account created, please log to access your account")
      account_create_text.grid(row=0,column=0)
 
-
+# checks the inputed login and compare to the database
 def login_check(frame,name,pin):
      global login_state
      error = Label()
@@ -86,10 +85,13 @@ def login_check(frame,name,pin):
                print("not here")
                failed_login_text=Label(frame,text="Invalid login")
                failed_login_text.grid(row=7,column= 0)
-     return
+
+
+
+#takes in input to get login info
 def login():
      global login_state
-     forget_wigit()
+     ac.forget_wigit()
      print("check2")
                     
      frame = LabelFrame(root,padx=10,pady=10)
@@ -97,23 +99,24 @@ def login():
      wigit_index.append(frame)
 
      name_text = Label(frame,text ="Please enter account name or email")
-     name_text.grid(row=1,column=0,columnspan=3)
+     name_text.grid(row=1,column=0,columnspan=4)
      wigit_index.append(name_text)
 
      name = Entry(frame, width=40)
-     name.grid(row=3,column=0,columnspan=3)
-     name.insert(0,"ex: ######@gmail.com")
+     name.grid(row=3,column=0,columnspan=4)
+     name.insert(0,"ian")
      wigit_index.append(name)
 
      pin_text = Label(frame,text="please enter account pin")
-     pin_text.grid(row=4,column=0,columnspan=3)
+     pin_text.grid(row=4,column=0,columnspan=4)
      wigit_index.append(pin_text)
 
      pin = Entry(frame,width=40)
-     pin.grid(row=6,column=0,columnspan=3)
+     pin.grid(row=6,column=0,columnspan=4)
      wigit_index.append(pin)
+     pin.insert(0,"12345678")
           
-     next = Button(frame,text="next",command=lambda:login_check(frame,str(name.get()),str(pin.get())))
+     next = Button(frame,text="next",command=lambda:login_check(frame,name.get(),pin.get()))
      next.grid(row=8,column=0)
      wigit_index.append(next)
 
@@ -129,8 +132,8 @@ login_state=False
 
 def main():
      global login_state 
-      
-     forget_wigit()
+     global account_login_location
+     ac.forget_wigit()
 
      quit = Button(root,text= "Exit program",command=lambda:root.destroy()).grid(row=10,column=0)
      blank1 = Label(root,text="").grid(row=3,column=10)
@@ -158,34 +161,46 @@ def main():
                          
      elif login_state:
           change = StringVar()
-          loged_in_prompt= Label(root,text=f"Welcome {ac_index[account_login_location]} to the online banking system")
-          loged_in_prompt.grid(row=0,column=0,rowspan=2,columnspan=3)
+          loged_in_prompt= Label(root,text=f"Welcome {ac_index[account_login_location].name_account()} to the online banking system")
+          loged_in_prompt.grid(row=0,column=0,pady=20,columnspan=10,sticky="NW")
           wigit_index.append(loged_in_prompt)
 
           #creates blank frames to fill with the information
-          fram1 = LabelFrame(root,padx=20,pady=15)
-          fram1.grid(row=1,column=0,columnspan=3)
+
+          #check balence frame
+          fram1 = LabelFrame(root,padx=50,pady=15)
+          fram1.grid(row=2,column=0,columnspan=10,sticky="EW")
           wigit_index.append(fram1)
+
+          #deposit frame
           fram2 = LabelFrame(root,padx=20,pady=15)
-          fram2.grid(row=2,column=0,columnspan=3)
+          fram2.grid(row=3,column=0,columnspan=4)
           wigit_index.append(fram2)
+
+          #withdraw frame
           fram3 = LabelFrame(root,padx=20,pady=15)
-          fram3.grid(row=3,column=0,columnspan=3)
+          fram3.grid(row=3,column=5,columnspan=4)
           wigit_index.append(fram3)
+
+          #check detials frame
           fram4 = LabelFrame(root,padx=20,pady=15)
-          fram4.grid(row=4,column=0,columnspan=3)
+          fram4.grid(row=4,column=0,columnspan=4)
           wigit_index.append(fram4)
+
+          #modify frame
           fram5 = LabelFrame(root,padx=20,pady=15)
-          fram5.grid(row=5,column=0,columnspan=3)
+          fram5.grid(row=4,column=5,columnspan=4)
           wigit_index.append(fram5)
+
+          #delete frame
           fram6 = LabelFrame(root,padx=20,pady=15)
-          fram6.grid(row=6,column=0,columnspan=3)
+          fram6.grid(row=6,column=0,columnspan=4)
           wigit_index.append(fram1)
 
           #short hand: check, dep, with, mod,log, del  to simplify code names
           #check account funds 
           check_b = Button(fram1,text="Check Account Balance",command=lambda:ac_index[account_login_location].check(fram1))
-          check_b.grid(row=0,column=0)
+          check_b.grid(row=0,column=0,columnspan=5,padx=100)
           wigit_index.append(check_b)
           #add to the account
 
@@ -198,8 +213,8 @@ def main():
           wigit_index.append(dep_amount)
 
           dep_b = Button(fram2,text="Deposit",command=lambda: ac_index[account_login_location].deposit(fram2,int(dep_amount.get())))
-          dep_b.grid(row=3,column=0)
-          wigit_index.append(del_b)
+          dep_b.grid(row=4,column=0)
+          wigit_index.append(dep_b)
 
           #withdraw from account
           with_text = Label(fram3,text="How much do you want to withdraw?")
@@ -211,7 +226,7 @@ def main():
           wigit_index.append(with_amount)
 
           with_b = Button(fram3,text="withdraw",command= lambda:ac_index[account_login_location].withdraw(fram3,int(with_amount.get())))
-          with_b.grid(row=3,column=0)
+          with_b.grid(row=4,column=0)
           wigit_index.append(with_b)
 
           #check account details 
@@ -224,16 +239,30 @@ def main():
           wigit_index.append(checkD_b)
 
           #modify account details 
-          mod_text = Label(fram5,text="")
+          mod_text = Label(fram5,text="Change information")
           mod_text.grid(row=0,column=0)
           wigit_index.append(mod_text)
-#ac_index[account_login_location].mod_info(object,new)
-          mod_name = Radiobutton(fram5)
-          mod_email = Radiobutton(fram5)
-          mod_pin = Radiobutton(fram5)
+#
+          mod_chamge = Entry(fram5,width=20)
+          mod_chamge.grid(row=1,column=0)
+          wigit_index.append(mod_chamge)
 
-          mod_b = Button(fram5,text="select")
-          mod_b.grid()
+
+          mod_name = Radiobutton(fram5,text="Name",variable=change, value="name")
+          mod_name.grid(row=2,column=0)
+          wigit_index.append(mod_name)
+
+          mod_email = Radiobutton(fram5,text="Email",variable=change, value="email")
+          mod_email.grid(row=2,column=1)
+          wigit_index.append(mod_email)
+
+          mod_pin = Radiobutton(fram5,text="Pin",variable=change, value="pin")
+          mod_pin.grid(row=2,column=2)
+          wigit_index.append(mod_pin)
+
+
+          mod_b = Button(fram5,text="select",command=lambda:ac_index[account_login_location].mod_info(change.get(),mod_chamge.get()))
+          mod_b.grid(row=6,column=0)
           wigit_index.append(mod_b)
 
           #delete account
