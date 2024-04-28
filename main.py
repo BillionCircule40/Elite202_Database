@@ -43,50 +43,56 @@ def delete(location):
           ac.messagebox.showinfo
 #directs to account modual info function
 def create():
+     ac.forget_wigit()
+     global ac_index_size
      global ac_created
      ac_created = True
      ac_index.append(ac.info(root))
-     ac.forget_wigit()
+  
+     return_b = Button(root,text="return",command=main)
+     return_b.grid(row=19,column=0)
+     wigit_index.append(return_b)
 
-     
+
+def check_info(locat,t):
+     check_info_text = Label(locat,text=t)
+     check_info_text.grid(row=2,column=0)
+     wigit_index.append(check_info_text)
+
 
 # checks the inputed login and compare to the database
 def login_check(frame,name,pin):
      global login_state
-     error = Label()
-     print("check3")
-     print(pin)
-     if len(pin)>=8:
-          error.grid_forget()
-     if len(name)>0:
-          error.grid_forget() 
 
-     if len(pin)<8:
-          error = Label(frame,text="-pin length must be at least 8 long",fg="red")
-          error.grid(row=5,column=0)
-     elif len(name)<=0 :
-          error = Label(frame,text="-must have login email or name",fg="red")
-          error.grid(row=2,column=0)
+     if len(name)<=0 or len(pin)<8 or any(inter.isalpha() for inter in pin):
+          if len(name)<=0 :
+               error_name = Label(frame,text="-must have login email or name",fg="red")
+               error_name.grid(row=2,column=0)
+               wigit_index.append(error_name)
+
+          if any(inter.isalpha() for inter in pin):
+               error_pin = Label(frame,text="Please no charecters in account pin.",fg="red")
+               error_pin.grid(row=10,column=0)
+               wigit_index.append(error_pin)
+
+          if len(pin)<8:
+               error_pin = Label(frame,text="-pin length must be at least 8 long",fg="red")
+               error_pin.grid(row=5,column=0)
+               wigit_index.append(error_pin)
 
      else:
           for x in range(len(ac_index)):
                if (ac_index[x].account_info.get("name") == name or ac_index[x].account_info.get("email")== name) and ac_index[x].account_info.get("pin") == pin:
-                    print("found")
-                    try:
-                         wigit_index.append(error)
-                         wigit_index.append(failed_login_text)
-                    except:
-                         pass
+               
                     global account_login_location
                     account_login_location= x
                     login_state=True
-                    print(login_state)
                     main()
 
           if login_state == False:
-               print("not here")
-               failed_login_text=Label(frame,text="Invalid login")
-               failed_login_text.grid(row=7,column= 0)
+               failed_login_text=Label(frame,text="Invalid login",fg="red")
+               failed_login_text.grid(row=0,column= 0)
+               wigit_index.append(failed_login_text)
 
 
 
@@ -94,7 +100,7 @@ def login_check(frame,name,pin):
 def login():
      global login_state
      ac.forget_wigit()
-     print("check2")
+
                     
      frame = LabelFrame(root,padx=10,pady=10)
      frame.grid(row=0,column=0,columnspan=10)
@@ -129,26 +135,26 @@ def login():
 
                     
 account_login_location = int
-login_state=False
+login_state = False
 ac_created = False
 def main():
      global login_state 
      global account_login_location
-     global ac_created
+     global ac_created 
+
      ac.forget_wigit()
 
      blank1 = Label(root,text="").grid(row=3,column=10)
      quit = Button(root,text= "Exit program",command=lambda:root.destroy()).grid(row=20,column=0)
 
      if not login_state :
-          print("check1")
-          print(login_state)
-          #if a account has been created pose this prompt 
           if ac_created:
                account_create_text = Label(root,text="account created, please log to access your account")
                account_create_text.grid(row=0,column=0)
                wigit_index.append(account_create_text)
-
+          print("check1")
+          #if a account has been created pose this prompt 
+               
           prompt= Label(root, text="welcome to the online bank system\n-please log or create account to continue " )
           prompt.grid(row=1,column=0,columnspan=4,sticky=W+E)
           wigit_index.append(prompt)
@@ -171,47 +177,52 @@ def main():
 
           #check balence frame
           fram1 = LabelFrame(root,padx=50,pady=15)
-          fram1.grid(row=2,column=0,columnspan=10,sticky="EW")
+          fram1.grid(row=2,column=0,columnspan=10,sticky="NEWS")
           wigit_index.append(fram1)
 
           #deposit frame
           fram2 = LabelFrame(root,padx=20,pady=15)
-          fram2.grid(row=3,column=0,columnspan=4)
+          fram2.grid(row=3,column=0,columnspan=4,sticky="NEWS")
           wigit_index.append(fram2)
 
           #withdraw frame
           fram3 = LabelFrame(root,padx=20,pady=15)
-          fram3.grid(row=3,column=5,columnspan=4)
+          fram3.grid(row=3,column=5,columnspan=4,sticky="NEWS")
           wigit_index.append(fram3)
 
           #check detials frame
           fram4 = LabelFrame(root,padx=20,pady=15)
-          fram4.grid(row=4,column=0,columnspan=4)
+          fram4.grid(row=4,column=0,columnspan=4,sticky="NEWS")
           wigit_index.append(fram4)
 
           #modify frame
           fram5 = LabelFrame(root,padx=20,pady=15)
-          fram5.grid(row=4,column=5,columnspan=4)
+          fram5.grid(row=4,column=5,columnspan=4,sticky="NEWS")
           wigit_index.append(fram5)
 
           #delete frame
           fram6 = LabelFrame(root,padx=20,pady=15)
-          fram6.grid(row=6,column=0,columnspan=4)
-          wigit_index.append(fram1)
+          fram6.grid(row=6,column=0,columnspan=4,sticky="NEWS")
+          wigit_index.append(fram6)
+
+          root.grid_columnconfigure(0,weight = 1)
+          root.grid_columnconfigure(5,weight=1)
+
+
 
           #short hand: check, dep, with, mod,log, del  to simplify code names
           #check account funds 
           check_b = Button(fram1,text="Check Account Balance",command=lambda:ac_index[account_login_location].check(fram1))
-          check_b.grid(row=0,column=0,columnspan=5,padx=250)
+          check_b.grid(row=0,column=0,columnspan=5,sticky="EW")
           wigit_index.append(check_b)
           #add to the account
 
           dep_text = Label(fram2,text="How much do you want to deposit?")
-          dep_text.grid(row=0,column=0,columnspan=3)
+          dep_text.grid(row=0,column=0,columnspan=4)
           wigit_index.append(dep_text)
 
           dep_amount = Entry(fram2,width=20)
-          dep_amount.grid(row=2,column=0)
+          dep_amount.grid(row=2,column=0,columnspan=3)
           wigit_index.append(dep_amount)
 
           dep_b = Button(fram2,text="Deposit",command=lambda: ac_index[account_login_location].deposit(fram2,int(dep_amount.get())))
@@ -233,20 +244,20 @@ def main():
 
           #check account details 
           checkD_text= Label(fram4,text="Check account information")
-          checkD_text.grid(row=0,column=0,columnspan=3)
+          checkD_text.grid(row=0,column=0,columnspan=4)
           wigit_index.append(checkD_text)
 
-          checkD_b= Button(fram4,text="select",command=lambda:ac_index[account_login_location].info_account(fram4))
-          checkD_b.grid(row=3,column=3,)
+          checkD_b= Button(fram4,text="select",command=lambda:check_info(fram4,ac_index[account_login_location].info_account()))
+          checkD_b.grid(row=3,column=0)
           wigit_index.append(checkD_b)
 
           #modify account details 
           mod_text = Label(fram5,text="Change information")
-          mod_text.grid(row=0,column=0)
+          mod_text.grid(row=0,column=0,columnspan=5)
           wigit_index.append(mod_text)
-#
+
           mod_chamge = Entry(fram5,width=20)
-          mod_chamge.grid(row=1,column=0)
+          mod_chamge.grid(row=1,column=0,columnspan=4)
           wigit_index.append(mod_chamge)
 
 
@@ -263,7 +274,7 @@ def main():
           wigit_index.append(mod_pin)
 
 
-          mod_b = Button(fram5,text="select",command=lambda:ac_index[account_login_location].mod_info(change.get(),mod_chamge.get()))
+          mod_b = Button(fram5,text="select",command=lambda:ac_index[account_login_location].mod_info(fram5,change.get(),mod_chamge.get()))
           mod_b.grid(row=6,column=0)
           wigit_index.append(mod_b)
 
@@ -272,7 +283,7 @@ def main():
           del_text.grid(row=0,column=0)
           wigit_index.append(del_text)
 
-          del_b = Button(fram6,text="delete",command=lambda:delete())
+          del_b = Button(fram6,text="delete",command=lambda:delete(account_login_location))
           del_b.grid(row=1,column=0)
           wigit_index.append(del_b)
           #log out/ resets the program
