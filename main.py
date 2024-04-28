@@ -43,10 +43,12 @@ def delete(location):
           ac.messagebox.showinfo
 #directs to account modual info function
 def create():
-     ac.forget_wigit()
+     global ac_created
+     ac_created = True
      ac_index.append(ac.info(root))
-     account_create_text = Label(root,text="account created, please log to access your account")
-     account_create_text.grid(row=0,column=0)
+     ac.forget_wigit()
+
+     
 
 # checks the inputed login and compare to the database
 def login_check(frame,name,pin):
@@ -88,7 +90,7 @@ def login_check(frame,name,pin):
 
 
 
-#takes in input to get login info
+#takes in input to get login info 
 def login():
      global login_state
      ac.forget_wigit()
@@ -115,13 +117,12 @@ def login():
      pin.grid(row=6,column=0,columnspan=4)
      wigit_index.append(pin)
      pin.insert(0,"12345678")
-          
+
+     #when clicked checks the information for errors and then checks database
      next = Button(frame,text="next",command=lambda:login_check(frame,name.get(),pin.get()))
      next.grid(row=8,column=0)
      wigit_index.append(next)
 
-     #end = Button(frame,text="end",command=root.destroy())
-     #end.grid(row=10,column=0)
      
 
      
@@ -129,24 +130,25 @@ def login():
                     
 account_login_location = int
 login_state=False
-
+ac_created = False
 def main():
      global login_state 
      global account_login_location
+     global ac_created
      ac.forget_wigit()
 
-     quit = Button(root,text= "Exit program",command=lambda:root.destroy()).grid(row=10,column=0)
      blank1 = Label(root,text="").grid(row=3,column=10)
-     blank2 = Label(root,text="").grid(row=4,column=10)
-     blank3 = Label(root,text="").grid(row=5,column=10)
-     blank4 = Label(root,text="").grid(row=6,column=10)
-     blank5 = Label(root,text="").grid(row=7,column=10)
-     blank6 = Label(root,text="").grid(row=8,column=10)
-     blank7 = Label(root,text="").grid(row=9,column=10)
+     quit = Button(root,text= "Exit program",command=lambda:root.destroy()).grid(row=20,column=0)
 
      if not login_state :
           print("check1")
           print(login_state)
+          #if a account has been created pose this prompt 
+          if ac_created:
+               account_create_text = Label(root,text="account created, please log to access your account")
+               account_create_text.grid(row=0,column=0)
+               wigit_index.append(account_create_text)
+
           prompt= Label(root, text="welcome to the online bank system\n-please log or create account to continue " )
           prompt.grid(row=1,column=0,columnspan=4,sticky=W+E)
           wigit_index.append(prompt)
@@ -200,7 +202,7 @@ def main():
           #short hand: check, dep, with, mod,log, del  to simplify code names
           #check account funds 
           check_b = Button(fram1,text="Check Account Balance",command=lambda:ac_index[account_login_location].check(fram1))
-          check_b.grid(row=0,column=0,columnspan=5,padx=100)
+          check_b.grid(row=0,column=0,columnspan=5,padx=250)
           wigit_index.append(check_b)
           #add to the account
 

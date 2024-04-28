@@ -16,7 +16,7 @@ class account:
           self.account_info.update({"pin":self.pin})
      def name_account(self):
           return f'User: {self.account_info.get("name")}, email: {self.account_info.get("email")}\n'
-     def info_account(self,locat):
+     def info_account(self):
           return f'\n-account name:{self.account_info.get("name")}\n-account email:{self.account_info.get("email")}\n-account pin:{self.account_info.get("pin")}\n'
      def mod_info(self,item,new,locat):
           if item == "email":
@@ -89,108 +89,114 @@ def forget_wigit():
                break
 
 
-def info_check(frame,n,e,p,r):
-     while True:
+def info_check(frame,n,e,p):
+     if any(char.isdigit() for char in n) or len(n)<=0 or len(e)<=0 or any(inter.isalpha() for inter in p) or len(p)< 8:
           if any(char.isdigit() for char in n):
-               name_error= Label(frame,text="please no numbers in account name.")
+               name_error= Label(frame,text="please no numbers in account name.",fg="red")
                name_error.grid(row=2,column=0)
-               break
+               wigit_index.append(name_error)
+                              
+          if len(n)<=0:
+               name_error= Label(frame,text="no blank account names.",fg="red")
+               name_error.grid(row=3,column=0)
+               wigit_index.append(name_error)
 
-          else:
-               try:
-                    name_error.grid_forget()
-               except:
-                    pass
-                    
           if len(e)<=0:
-               email_error =  Label(frame,text="no blank emails")
-               email_error.grid(row=5,column=0)
-               break
-          else:
-               try:
-                    email_error.grid_forget()
-               except:
-                    pass
-                    
+               email_error =  Label(frame,text="no blank emails",fg="red")
+               email_error.grid(row=6,column=0)
+               wigit_index.append(email_error)
+                         
           if any(inter.isalpha() for inter in p):
-               pin_error = Label(frame,text="Please no charecters in account pin.")
-               pin_error.grid(row=6,column=0)
-               break
+               pin_error = Label(frame,text="Please no charecters in account pin.",fg="red")
+               pin_error.grid(row=10,column=0)
+               wigit_index.append(pin_error)
+                    
 
-          elif len(p)< 8:
-               pin_error = Label(frame,text="Pin must be at least then 8 digits long")
-               pin_error.grid(row=6,column=0)
-               break
+          if len(p)< 8:
+               pin_error = Label(frame,text="Pin must be at least then 8 digits long",fg="red")
+               pin_error.grid(row=11,column=0)
+               wigit_index.append(pin_error)
+                    
 
-          else:
-               try:
-                    pin_error.grid_forget()
-               except:
-                    pass
-          confirm(frame,n,e,p,r)
+     else:       
+          confirm(n,e,p)
+#prompt user to check if the inputed information is correct 
+def confirm(n,e,p):
+     global name 
+     global email 
+     global pin
+     forget_wigit()         
+     confirm_info = messagebox.askquestion("confirm",f"is this correct {ac(n,e,p).info_account()} ")
+     if confirm_info == "yes":
+          name = n
+          email = e
+          pin = p
+     else:
+          info()
 
-def confirm(frame,n,e,p,r):
-     while True:
-          forget_wigit()         
-          confirm_text = Label(frame,text = f'is this correct {ac(n,e,p)} ').grid(row=0,column=0)
-          confirm_info = messagebox.askyesno()
 
-          if confirm_info == 1:
-               
-               break
-          else:
-               break
 
+name = ""
+email =""
+pin = ""
 # collects and processes data for the system to create base account structure
 def info(root,testin='',testem='',testpin = ''):
-     
-     name = StringVar()
-     email =StringVar()
-     pin = StringVar()
-     repeat = BooleanVar()
-     repeat.set(True)
-     confirm = BooleanVar()
+     forget_wigit()
+     global name 
+     global email 
+     global pin 
+     if not name == "" and not email == "" and not pin == ""  :
+          return ac(name,email,pin)
+     if testin =='' and testem == '' and testpin == '':  
+          #generate fram for infromation
+          frame = LabelFrame(root,padx=10,pady=10)
+          frame.grid(row=0,column=0,columnspan=10,rowspan=11)
+          wigit_index.append(frame)
 
-     if testin =='' and testem == '' and testpin == '':
-          while repeat:
-               print("t")
-               confirm.set(False)
-               frame = LabelFrame(root,padx=10,pady=10)
-               frame.grid(row=0,column=0)
-               
+          #generate to intro 
+          ac_creat_intro_prompt = Label(frame,text="Welcome to account creation, please enter the following information to continue.")
+          ac_creat_intro_prompt.grid(row=0,column=0,columnspan=3)
+          wigit_index.append(ac_creat_intro_prompt)
 
-               name_text = Label(frame,text="Please enter name for account")
-               name_text.grid(row=0,column=0)
-               wigit_index.append(name_text)
+          #generate name promt
+          name_text = Label(frame,text="Please enter name for account")
+          name_text.grid(row=1,column=0)
+          wigit_index.append(name_text)
 
-               name = Entry(frame,width=40)
-               name.grid(row=1,column=0)
-               wigit_index.append(name)
+          #collect chosen name
+          name_input = Entry(frame,width=40)
+          name_input.grid(row=4,column=0)
+          wigit_index.append(name_input)
 
-               email_text = Label(frame,text="Please enter email for account")
-               email_text.grid(row=3,column=0)
-               wigit_index.append(email_text)
+          #generate email promt
+          email_text = Label(frame,text="Please enter email for account")
+          email_text.grid(row=5,column=0)
+          wigit_index.append(email_text)
 
-               email = Entry(frame,width=40)
-               email.grid(row=4,column=0)
-               email.insert(0,"ex: ######@gmail.com")
-               wigit_index.append(email)
+          #collect chosen email 
+          email_input = Entry(frame,width=40)
+          email_input.grid(row=8,column=0)
+          email_input.insert(0,"ex: ######@gmail.com")
+          wigit_index.append(email_input)
 
-               pin_text = Label(frame,text="Please enter pin for account(min 8)")
-               pin_text.grid(row=5,column=0)
-               wigit_index.append(pin_text)
+          #generate pin promt
+          pin_text = Label(frame,text="Please enter pin for account(min 8)")
+          pin_text.grid(row=9,column=0)
+          wigit_index.append(pin_text)
 
-               pin = Entry(frame,width=40)
-               pin.grid(row=6,column=0)
-               wigit_index.append(pin)
+          #collect chosen pin number
+          pin_input = Entry(frame,width=40)
+          pin_input.grid(row=11,column=0)
+          wigit_index.append(pin_input)
 
-               next = Button(root,text="next",command=lambda: info_check(frame,name.get(),email.get(),pin.get(),repeat.get()))
-               next.grid(row=7,column=0)
+          #check info and poes errors if missing or invalid information is present when clicked 
+          next = Button(root,text="next",command=lambda: info_check(frame,name_input.get(),email_input.get(),pin_input.get()))
+          next.grid(row=12,column=0)
 
 
                     
 
      
-          return ac(name.get(),email.get(),pin.get()) 
+           
      else:
           return ac(testin,testem,testpin)
