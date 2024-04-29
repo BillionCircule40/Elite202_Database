@@ -49,9 +49,8 @@ def create():
      ac_created = True
      ac_index.append(ac.info(root))
   
-     return_b = Button(root,text="return",command=lambda:main()& return_b.grid_forget())
+     return_b = Button(root,text="return",command= lambda:main()& return_b.grid_forget())
      return_b.grid(row=19,column=0)
-     wigit_index.append(return_b)
 
 
 def check_info(locat,t):
