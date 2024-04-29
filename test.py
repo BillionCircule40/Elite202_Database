@@ -1,16 +1,16 @@
-from tkinter import *
+import mysql.connector as sql
 
-b = False
-def click():
-     global b 
-     print(b)
-     b= True
-     
 
-main = Tk()
-main.geometry("300x100")
-check = Button(main,text="press",command=click).pack()
-test = Button(main,text="test",command=lambda:print(b)).pack()
-if b:
-     print("work")
-main.mainloop()
+connection  = sql.connect(
+     host = "localhost",
+     user='root',
+     password='test1234',
+     database =  "accounts"
+
+     )
+cursor = connection.cursor()
+addData = ('INSERT INTO account_info ( name, email, pin,balence) VALUES ("test","teste",11111111,0)')
+cursor.execute(addData)
+connection.commit()
+fetch = ("SELECT * FROM account_info")
+cursor.execute(fetch)

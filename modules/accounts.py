@@ -1,23 +1,60 @@
 from tkinter import *
 from tkinter import messagebox
+import mysql.connector as sql
 
+
+
+con  = sql.connect(
+               host = "localhost",
+               user='root',
+               password='test1234',
+               database =  "accounts"
+
+               )
+cur = con.cursor(buffered = True)
 wigit_index =[]
+wigit_index_end=[]
+database_list = []
+
 class account:
      
      def __init__(self,name,email,pin,funds = 0):
-          account_info = {}
+
           self.name = name
           self.email = email
           self.pin = pin
           self.funds= funds
-          self.account_info = account_info
-          self.account_info.update({"name":self.name})
-          self.account_info.update({"email":self.email})
-          self.account_info.update({"pin":self.pin})
+          addData = (f'INSERT INTO account_info (name, email, pin,balence) VALUES ("{self.name}","{str(self.email)}","{str(self.pin)}",{self.funds})')
+          par = (f'SELECT ID FROM account_info WHERE name ="{self.name}" AND email = "{self.email}"AND pin ="{self.pin}" ')
+          cur.execute(par)
+          self.id = cur.fetchall()
+          con.commit()
+          cur.execute(addData)
+          con.commit()
+
+     
+
      def name_account(self):
-          return f'User: {self.account_info.get("name")}, email: {self.account_info.get("email")}\n'
+          name = (f'SELECT name FROM account_info WHERE ID = "{self.id}"') 
+          email = (f'SELECT email FROM account_info WHERE ID = "{self.id}"')
+          return f'User: {cur.execute(name)}, email: {cur.execute(email)}\n'
+     
      def info_account(self):
-          return f'\n-account name: {self.account_info.get("name")}\n-account email: {self.account_info.get("email")}\n-account pin: {self.account_info.get("pin")}\n'
+          print(self.id)
+          namet = (f'SELECT name FROM account_info WHERE ID = "{self.id}"') 
+          cur.execute(namet)
+          name = cur.fetchall()
+          con.commit()
+          emailt = (f'SELECT email FROM account_info WHERE ID = "{self.id}"')
+          cur.execute(emailt)
+          con.commit()
+          email = cur.fetchall()
+          pint = (f'SELECT pin FROM account_info WHERE ID = "{self.id}"')
+          cur.execute(pint)
+          con.commit()
+          pin = cur.fetchall()
+          return f'\n-account name: {name}\n-account email: {email}\n-account pin: {pin}\n'
+     
      def mod_info(self,item,new,locat):
           if item == "email":
                change = Label(locat,text="change of email successful")
@@ -34,18 +71,20 @@ class account:
                change.grid(row=5,column=0)
                wigit_index.append(change)
                self.pin = new
+          new_info = (f"UPDATE account_info SET name='{self.name}'email = '{self.email}'pin = '{self.pin}'WHERE ID={self.id}")
           
-          self.account_info.update({"name":self.name})
-          self.account_info.update({"email":self.email})
-          self.account_info.update({"pin":self.pin})
+          cur.execute(new_info)
      
 
      def check(self,locat):
-          check = Label(locat,text=f'-account name: {self.account_info.get("name")}\n-account balance: {self.funds}')
+          name = (f'SELECT name FROM account_info WHERE ID = "{self.id}"')
+          funds = (f'SELECT balence FROM account_info WHERE ID = "{self.id}"')
+          check = Label(locat,text=f'-account name: {str(cur.execute(name))}\n-account balance: {str(cur.execute(funds))}')
           check.grid(row=1,column=0,columnspan=5,padx=100)
           wigit_index.append(check)
      
      def deposit(self,locat,ammount = 0):
+          funds = cur.execute(f'SELECT balence FROM account_info WHERE ID = "{self.id}"')
           if not ammount<0:
                try:
                     invalid.grid_forget()
@@ -54,14 +93,16 @@ class account:
                suc = Label(locat,text=f"successful deposit of ${ammount}")
                suc.grid(row=3,column=0)
                wigit_index.append(suc)
-               self.funds += ammount
+               funds += ammount
+               cur.execute(f'UPDATE account_info SET balence = {funds} WHERE ID = "{self.id}" ')
           else:
                invalid = Label(locat,text=f"invalid balace\non deposit ${ammount} to your account",fg="red")
                invalid.grid(row=1,column=0,pady=5)
                wigit_index.append(invalid)
 
      def withdraw(self,locat,ammount):
-          if not self.funds < ammount:
+          funds = cur.execute(f'SELECT balence FROM account_info WHERE ID = "{self.id}"')
+          if not funds < ammount:
                try:
                     invalid.grid_forget()
                except:
@@ -69,11 +110,30 @@ class account:
                suc = Label(locat,text=f"successful withdraw of ${ammount}")
                suc.grid(row=3,column=0)
                wigit_index.append(suc)
-               self.funds-=ammount
+               funds -= ammount
+               cur.execute(f'UPDATE account_info SET balence = {funds} WHERE ID = "{self.id}" ')
+
           else:
                invalid = Label(locat,text=f"invalid balace\non withdraw of$ {ammount} from your account",fg="red")
                invalid.grid(row=3,column=0,pady=5)
                wigit_index.append(invalid)
+
+     def list_populate():
+          cur = con.cursor()
+          
+          cur.execute('SELECT * FROM account_info ')
+          row_loc = cur.fetchall()
+          for row in row_loc:
+               data = {}
+               data["id"] = int(row[0])
+               data["name"] = str(row[1])
+               data["email"] = str(row[2])
+               data["pin"] = str(row[3])
+               database_list.append(data)
+
+          return database_list
+
+
 ac = account
 
 def forget_wigit():
@@ -86,7 +146,20 @@ def forget_wigit():
                     pass
           if len(wigit_index) == 0:
                break
+def reset():
+     while True:
+          for wigit in wigit_index_end:
+               try:
+                    wigit.destroy()
+                    wigit_index_end.remove(wigit)
+               except:
+                    pass
+          if len(wigit_index_end) == 0:
+               break
 
+def wigit_sys(ob):
+     wigit_index.append(ob)
+     wigit_index_end.append(ob)
 
 def info_check(frame,n,e,p,r):
      if any(char.isdigit() for char in n) or len(n)<=0 or len(e)<=0 or any(inter.isalpha() for inter in p) or len(p)< 8:
@@ -124,9 +197,14 @@ def confirm(n,e,p,r):
      global name 
      global email 
      global pin
-     forget_wigit()         
+     global instance
+     global database_list
+     forget_wigit()
+     ac(n,e,p)
+
      confirm_info = messagebox.askquestion("confirm",f"is this correct {ac(n,e,p).info_account()} ")
      if confirm_info == "yes":
+          database_list=ac.list_populate()    
           name = n
           email = e
           pin = p
@@ -135,7 +213,7 @@ def confirm(n,e,p,r):
           info(r)
 
 
-
+instance = ""
 name = ""
 email =""
 pin = ""
@@ -145,11 +223,13 @@ def info(root,testin = '',testem = '',testpin = ''):
      global name 
      global email 
      global pin 
+     global instance
      print(not name == "")
      if not name == "" and not email == "" and not pin == ""  :
-
-          return ac(name,email,pin)
-     if testin =='' and testem == '' and testpin == '':  
+          reset()
+          return database_list
+     if testin =='' and testem == '' and testpin == '':
+          instance= ""  
           print("check flow")
           #generate fram for infromation
           frame = LabelFrame(root,padx=10,pady=10)
