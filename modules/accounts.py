@@ -99,7 +99,7 @@ def reset():
                break
 
 def wigit_sys(ob):
-     wigit_sys(ob)
+     wigit_index.append(ob)
      wigit_index_end.append(ob)
 
 
